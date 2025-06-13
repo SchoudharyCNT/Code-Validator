@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useMemo } from 'react';
@@ -18,6 +19,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
 
 interface RulesTableProps {
   rules: Rule[];
@@ -27,6 +29,9 @@ interface RulesTableProps {
   onEditRule: (rule: Rule) => void;
   onDeleteRule: (ruleId: string) => void;
 }
+
+const ALL_LANGUAGES_VALUE = "_all_languages_";
+const ALL_CATEGORIES_VALUE = "_all_categories_";
 
 export function RulesTable({ rules, languages, categories, subcategories, onEditRule, onDeleteRule }: RulesTableProps) {
   const [filterLanguage, setFilterLanguage] = useState('');
@@ -52,8 +57,8 @@ export function RulesTable({ rules, languages, categories, subcategories, onEdit
   const severityVariant = (severity: Rule['severity']): "default" | "secondary" | "destructive" | "outline" => {
     switch (severity) {
       case 'Error': return 'destructive';
-      case 'Warning': return 'secondary'; // Using secondary for warning, as yellow might not fit theme
-      case 'Info': return 'default'; // Using default for info (blueish with default primary)
+      case 'Warning': return 'secondary';
+      case 'Info': return 'default';
       default: return 'outline';
     }
   };
@@ -69,6 +74,21 @@ export function RulesTable({ rules, languages, categories, subcategories, onEdit
     }
   };
 
+  const handleLanguageFilterChange = (selectedValue: string) => {
+    const newLangFilter = selectedValue === ALL_LANGUAGES_VALUE ? "" : selectedValue;
+    setFilterLanguage(newLangFilter);
+    if (newLangFilter === "") { // If "All Languages" is selected, reset category filter
+      setFilterCategory("");
+    }
+  };
+
+  const handleCategoryFilterChange = (selectedValue: string) => {
+    setFilterCategory(selectedValue === ALL_CATEGORIES_VALUE ? "" : selectedValue);
+  };
+
+  const availableCategoriesForFilter = useMemo(() => {
+    return categories.filter(c => !filterLanguage || c.languageId === filterLanguage);
+  }, [categories, filterLanguage]);
 
   return (
     <div className="space-y-4">
@@ -77,18 +97,21 @@ export function RulesTable({ rules, languages, categories, subcategories, onEdit
            <CardTitle className="font-headline text-lg flex items-center gap-2"><Filter className="h-5 w-5 text-primary" /> Filter Rules</CardTitle>
         </CardHeader>
         <CardContent className="p-2 grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Select value={filterLanguage} onValueChange={setFilterLanguage}>
+          <Select value={filterLanguage} onValueChange={handleLanguageFilterChange}>
             <SelectTrigger><SelectValue placeholder="Filter by language..." /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Languages</SelectItem>
+              <SelectItem value={ALL_LANGUAGES_VALUE}>All Languages</SelectItem>
               {languages.map(lang => <SelectItem key={lang.id} value={lang.id}>{lang.name}</SelectItem>)}
             </SelectContent>
           </Select>
-          <Select value={filterCategory} onValueChange={setFilterCategory} disabled={!filterLanguage && categories.length === 0}>
+          <Select 
+            value={filterCategory} 
+            onValueChange={handleCategoryFilterChange}
+          >
              <SelectTrigger><SelectValue placeholder="Filter by category..." /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Categories</SelectItem>
-              {categories.filter(c => !filterLanguage || c.languageId === filterLanguage).map(cat => <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>)}
+              <SelectItem value={ALL_CATEGORIES_VALUE}>All Categories</SelectItem>
+              {availableCategoriesForFilter.map(cat => <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>)}
             </SelectContent>
           </Select>
           <Input 
@@ -163,9 +186,3 @@ export function RulesTable({ rules, languages, categories, subcategories, onEdit
     </div>
   );
 }
-
-// Added Card and CardHeader, CardContent for filter section for better grouping.
-// These components are standard shadcn/ui components.
-// If they are not globally imported, make sure they are available.
-// For simplicity, I'm assuming Card related imports are fine like other shadcn components.
-import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
