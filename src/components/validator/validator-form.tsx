@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -170,7 +171,9 @@ export function ValidatorForm() {
               <CheckCircle className="h-7 w-7" />
               Validation Results
             </CardTitle>
-            <CardDescription>{validationResult.summary}</CardDescription>
+            {validationResult.summary && (
+              <CardDescription>{validationResult.summary}</CardDescription>
+            )}
           </CardHeader>
           <CardContent className="space-y-4">
             {validationResult.violations.length > 0 ? (
@@ -186,8 +189,12 @@ export function ValidatorForm() {
                       </div>
                     </AccordionTrigger>
                     <AccordionContent className="space-y-2 pl-8 text-sm">
-                      <p><strong className="text-foreground">Description:</strong> {violation.description}</p>
-                      <p><strong className="text-foreground">Suggestion:</strong> {violation.suggestion}</p>
+                      {violation.description && (
+                        <p><strong className="text-foreground">Description:</strong> {violation.description}</p>
+                      )}
+                      {violation.suggestion && (
+                        <p><strong className="text-foreground">Suggestion:</strong> {violation.suggestion}</p>
+                      )}
                     </AccordionContent>
                   </AccordionItem>
                 ))}
@@ -222,3 +229,4 @@ export function ValidatorForm() {
     </div>
   );
 }
+
