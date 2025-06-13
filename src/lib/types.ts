@@ -15,7 +15,7 @@ export interface Subcategory {
   categoryId: string;
 }
 
-export type RuleSeverity = 'Error' | 'Warning' | 'Info';
+export type RuleSeverity = "HIGH" | "MEDIUM" | "LOW";
 
 export interface Rule {
   id: string;
