@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -48,9 +49,9 @@ Your task is to analyze the code snippet and identify any violations of the rule
 Language: {{{language}}}
 Category: {{{category}}}
 Code:
-```{{{language}}}```
+\`\`\` {{{language}}}\`\`\`
 {{{code}}}
-```
+\`\`\`
 
 Provide a summary of the validation results and a list of violations found, including the rule violated, a description of the violation, and suggestions for fixing it. Include line numbers if applicable.
 
