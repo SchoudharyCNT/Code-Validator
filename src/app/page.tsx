@@ -1,5 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Lightbulb, ShieldCheck, Edit3 } from "lucide-react";
 import Link from "next/link";
 
@@ -11,8 +17,9 @@ export default function HomePage() {
           Welcome to CodeCheck AI
         </h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-          Your intelligent assistant for ensuring code quality, security, and adherence to best practices.
-          Validate your code snippets and manage custom validation rules with ease.
+          Your intelligent assistant for ensuring code quality, security, and
+          adherence to best practices. Validate your code snippets and manage
+          custom validation rules with ease.
         </p>
       </section>
 
@@ -24,7 +31,8 @@ export default function HomePage() {
               Code Validator
             </CardTitle>
             <CardDescription>
-              Submit your code snippets and get instant AI-powered feedback on potential issues, based on selected languages and categories.
+              Submit your code snippets and get instant feedback on potential
+              issues, based on selected languages and categories.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -44,7 +52,8 @@ export default function HomePage() {
               Rule Management
             </CardTitle>
             <CardDescription>
-              Create, view, update, and delete custom validation rules. Tailor the validation logic to your project's specific needs.
+              Create, view, update, and delete custom validation rules. Tailor
+              the validation logic to your project's specific needs.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -59,13 +68,32 @@ export default function HomePage() {
       </section>
 
       <section className="w-full max-w-4xl text-left p-6 bg-card rounded-lg shadow-md">
-        <h2 className="text-3xl font-headline font-semibold text-primary mb-4">How it Works</h2>
+        <h2 className="text-3xl font-headline font-semibold text-primary mb-4">
+          How it Works
+        </h2>
         <ol className="list-decimal list-inside space-y-2 text-muted-foreground">
-          <li><strong className="text-foreground">Select Language & Category:</strong> Choose the programming language and validation focus.</li>
-          <li><strong className="text-foreground">Input Code:</strong> Paste or type your code into the editor.</li>
-          <li><strong className="text-foreground">Validate:</strong> Let our AI analyze your code against predefined and custom rules.</li>
-          <li><strong className="text-foreground">Review Results:</strong> Get a clear summary of violations, descriptions, and suggestions.</li>
-          <li><strong className="text-foreground">Manage Rules:</strong> Customize the validation engine by adding your own rules.</li>
+          <li>
+            <strong className="text-foreground">
+              Select Language & Category:
+            </strong>{" "}
+            Choose the programming language and validation focus.
+          </li>
+          <li>
+            <strong className="text-foreground">Input Code:</strong> Paste or
+            type your code into the editor.
+          </li>
+          <li>
+            <strong className="text-foreground">Validate:</strong> Let our AI
+            analyze your code against predefined and custom rules.
+          </li>
+          <li>
+            <strong className="text-foreground">Review Results:</strong> Get a
+            clear summary of violations, descriptions, and suggestions.
+          </li>
+          <li>
+            <strong className="text-foreground">Manage Rules:</strong> Customize
+            the validation engine by adding your own rules.
+          </li>
         </ol>
       </section>
     </div>
