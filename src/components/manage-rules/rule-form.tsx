@@ -1,6 +1,8 @@
+
 "use client";
 
-import { useState, useEffect, type FormEvent } from "react";
+import type { FormEvent } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,7 +23,7 @@ import {
 import { Loader2, Sparkles } from "lucide-react";
 
 interface RuleFormProps {
-  onSubmit: (rule: Rule) => void;
+  onSubmit: (rule: Omit<Rule, "id"> | Rule) => void;
   onCancel: () => void;
   initialData?: Rule | null;
   languages: Language[];
@@ -39,18 +41,21 @@ const defaultRule: Omit<Rule, "id"> = {
   validationValue: "",
 };
 
-export function RuleForm({
+export const RuleForm = ({
   onSubmit,
   onCancel,
   initialData,
   languages,
   categories: allCategories,
-}: RuleFormProps) {
-  const [rule, setRule] = useState<Omit<Rule, "id">>(
-    initialData
-      ? { ...defaultRule, ...initialData }
-      : { ...defaultRule }
-  );
+}: RuleFormProps) => {
+  const [rule, setRule] = useState<Omit<Rule, "id"> | Rule>(() => {
+    const base = initialData ? { ...defaultRule, ...initialData } : { ...defaultRule };
+    return {
+      ...base,
+      validationType: initialData?.validationType || "",
+      validationValue: initialData?.validationValue || "",
+    };
+  });
   const [availableCategories, setAvailableCategories] = useState<Category[]>(
     []
   );
@@ -58,7 +63,12 @@ export function RuleForm({
   const { toast } = useToast();
 
   useEffect(() => {
-    setRule(initialData ? { ...defaultRule, ...initialData } : { ...defaultRule });
+    const base = initialData ? { ...defaultRule, ...initialData } : { ...defaultRule };
+    setRule({
+        ...base,
+        validationType: initialData?.validationType || "",
+        validationValue: initialData?.validationValue || ""
+    });
   }, [initialData]);
 
   useEffect(() => {
@@ -67,16 +77,20 @@ export function RuleForm({
         (c) => c.languageId === rule.languageId
       );
       setAvailableCategories(filtered);
-      if (!filtered.some((c) => c.id === rule.categoryId)) {
+      if (rule.categoryId && !filtered.some((c) => c.id === rule.categoryId)) {
         setRule((prev) => ({ ...prev, categoryId: "" }));
       }
     } else {
       setAvailableCategories([]);
       setRule((prev) => ({ ...prev, categoryId: "" }));
     }
-  }, [rule.languageId, allCategories]);
+  }, [rule.languageId, rule.categoryId, allCategories]);
 
-  const handleChange = (field: keyof Omit<Rule, "id">, value: string) => {
+
+  const handleChange = (
+    field: keyof Rule, 
+    value: string | RuleSeverity
+  ) => {
     setRule((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -91,7 +105,7 @@ export function RuleForm({
       });
       return;
     }
-    onSubmit(rule as Rule);
+    onSubmit(rule);
   };
 
   const handleAISuggest = async () => {
@@ -130,7 +144,7 @@ export function RuleForm({
       const suggestionInput = {
         language: selectedLanguage.name,
         category: selectedCategory.name,
-        codeExample: rule.codeExample,
+        codeExample: rule.codeExample || "",
         description: rule.description,
       };
 
@@ -189,7 +203,7 @@ export function RuleForm({
           <Select
             value={rule.categoryId}
             onValueChange={(value) => handleChange("categoryId", value)}
-            disabled={!rule.languageId}
+            disabled={!rule.languageId || availableCategories.length === 0}
           >
             <SelectTrigger id="rule-category">
               <SelectValue placeholder="Select category..." />
@@ -231,7 +245,7 @@ export function RuleForm({
         <Textarea
           id="rule-code-example"
           className="font-code"
-          value={rule.codeExample}
+          value={rule.codeExample || ""}
           onChange={(e) => handleChange("codeExample", e.target.value)}
           placeholder="const password = 'secret';"
           rows={4}
@@ -254,7 +268,7 @@ export function RuleForm({
             id="rule-validation-value"
             value={rule.validationValue || ""}
             onChange={(e) => handleChange("validationValue", e.target.value)}
-            placeholder="e.g., /password\s*=\s*['\"].*['\"]/"
+            placeholder="e.g., /password\\s*=\\s*['\"].*['\"]/"
           />
         </div>
       </div>
@@ -310,4 +324,4 @@ export function RuleForm({
       </div>
     </form>
   );
-}
+};
