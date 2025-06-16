@@ -1,8 +1,6 @@
-
 "use client";
 
-import type { FormEvent } from "react";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, type FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -23,42 +21,32 @@ import {
 import { Loader2, Sparkles } from "lucide-react";
 
 interface RuleFormProps {
-  onSubmit: (rule: Omit<Rule, "id"> | Rule) => void;
+  onSubmit: (rule: Rule) => void;
   onCancel: () => void;
   initialData?: Rule | null;
   languages: Language[];
   categories: Category[];
 }
 
-const defaultRuleBase: Omit<Rule, "id"> = {
+const defaultRule: Omit<Rule, "id"> = {
   languageId: "",
   categoryId: "",
   title: "",
   description: "",
   codeExample: "",
   severity: "MEDIUM",
-  validationType: "",
-  validationValue: "",
 };
 
-export const RuleForm: React.FC<RuleFormProps> = ({
+export function RuleForm({
   onSubmit,
   onCancel,
   initialData,
   languages,
   categories: allCategories,
-}) => {
-  const [rule, setRule] = useState<Omit<Rule, "id"> | Rule>(() => {
-    if (initialData) {
-      return {
-        ...defaultRuleBase,
-        ...initialData,
-        validationType: initialData.validationType || "",
-        validationValue: initialData.validationValue || "",
-      };
-    }
-    return { ...defaultRuleBase };
-  });
+}: RuleFormProps) {
+  const [rule, setRule] = useState<Omit<Rule, "id">>(
+    initialData || defaultRule
+  );
   const [availableCategories, setAvailableCategories] = useState<Category[]>(
     []
   );
@@ -66,16 +54,7 @@ export const RuleForm: React.FC<RuleFormProps> = ({
   const { toast } = useToast();
 
   useEffect(() => {
-    if (initialData) {
-      setRule({
-        ...defaultRuleBase,
-        ...initialData,
-        validationType: initialData.validationType || "",
-        validationValue: initialData.validationValue || "",
-      });
-    } else {
-      setRule({ ...defaultRuleBase });
-    }
+    setRule(initialData || defaultRule);
   }, [initialData]);
 
   useEffect(() => {
@@ -84,20 +63,16 @@ export const RuleForm: React.FC<RuleFormProps> = ({
         (c) => c.languageId === rule.languageId
       );
       setAvailableCategories(filtered);
-      if (rule.categoryId && !filtered.some((c) => c.id === rule.categoryId)) {
+      if (!filtered.some((c) => c.id === rule.categoryId)) {
         setRule((prev) => ({ ...prev, categoryId: "" }));
       }
     } else {
       setAvailableCategories([]);
       setRule((prev) => ({ ...prev, categoryId: "" }));
     }
-  }, [rule.languageId, rule.categoryId, allCategories]);
+  }, [rule.languageId, allCategories]);
 
-
-  const handleChange = (
-    field: keyof Omit<Rule, "id">,
-    value: string | RuleSeverity
-  ) => {
+  const handleChange = (field: keyof Omit<Rule, "id">, value: string) => {
     setRule((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -107,12 +82,12 @@ export const RuleForm: React.FC<RuleFormProps> = ({
     if (!languageId || !categoryId || !title || !description || !severity) {
       toast({
         title: "Error",
-        description: "Please fill in all required fields (Language, Category, Title, Description, Severity).",
+        description: "Please fill in all required fields.",
         variant: "destructive",
       });
       return;
     }
-    onSubmit(rule);
+    onSubmit(rule as Rule);
   };
 
   const handleAISuggest = async () => {
@@ -123,9 +98,9 @@ export const RuleForm: React.FC<RuleFormProps> = ({
       !rule.description
     ) {
       toast({
-        title: "Missing Information for AI Suggestion",
+        title: "Missing Information",
         description:
-          "Please provide Language, Category, Code Example, and a base Description for AI suggestions.",
+          "Please provide Language, Category, Code Example, and Description for AI suggestions.",
         variant: "destructive",
       });
       return;
@@ -141,7 +116,7 @@ export const RuleForm: React.FC<RuleFormProps> = ({
       if (!selectedLanguage || !selectedCategory) {
         toast({
           title: "Error",
-          description: "Selected language or category not found for AI suggestion.",
+          description: "Selected language or category not found.",
           variant: "destructive",
         });
         setIsSuggesting(false);
@@ -151,7 +126,7 @@ export const RuleForm: React.FC<RuleFormProps> = ({
       const suggestionInput = {
         language: selectedLanguage.name,
         category: selectedCategory.name,
-        codeExample: rule.codeExample || "",
+        codeExample: rule.codeExample,
         description: rule.description,
       };
 
@@ -186,8 +161,6 @@ export const RuleForm: React.FC<RuleFormProps> = ({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 py-4">
-      <div>Diagnostic Test: Minimal Form Content</div>
-      {/*
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <Label htmlFor="rule-language">Language *</Label>
@@ -212,7 +185,7 @@ export const RuleForm: React.FC<RuleFormProps> = ({
           <Select
             value={rule.categoryId}
             onValueChange={(value) => handleChange("categoryId", value)}
-            disabled={!rule.languageId || availableCategories.length === 0}
+            disabled={!rule.languageId}
           >
             <SelectTrigger id="rule-category">
               <SelectValue placeholder="Select category..." />
@@ -250,36 +223,15 @@ export const RuleForm: React.FC<RuleFormProps> = ({
       </div>
 
       <div>
-        <Label htmlFor="rule-code-example">Code Example (optional, but recommended for AI Suggest)</Label>
+        <Label htmlFor="rule-code-example">Code Example (optional)</Label>
         <Textarea
           id="rule-code-example"
           className="font-code"
-          value={rule.codeExample || ""}
+          value={rule.codeExample}
           onChange={(e) => handleChange("codeExample", e.target.value)}
           placeholder="const password = 'secret';"
           rows={4}
         />
-      </div>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <Label htmlFor="rule-validation-type">Validation Type (optional)</Label>
-          <Input
-            id="rule-validation-type"
-            value={rule.validationType || ""}
-            onChange={(e) => handleChange("validationType", e.target.value)}
-            placeholder="e.g., Regex, AST_Selector"
-          />
-        </div>
-        <div>
-          <Label htmlFor="rule-validation-value">Validation Value (optional)</Label>
-          <Input
-            id="rule-validation-value"
-            value={rule.validationValue || ""}
-            onChange={(e) => handleChange("validationValue", e.target.value)}
-            placeholder="e.g., /password\\s*=\\s*['\"].*['\"]/"
-          />
-        </div>
       </div>
 
       <div>
@@ -306,7 +258,7 @@ export const RuleForm: React.FC<RuleFormProps> = ({
           type="button"
           variant="outline"
           onClick={handleAISuggest}
-          disabled={isSuggesting || !rule.codeExample || !rule.description || !rule.languageId || !rule.categoryId}
+          disabled={isSuggesting}
           className="w-full sm:w-auto"
         >
           {isSuggesting ? (
@@ -328,10 +280,9 @@ export const RuleForm: React.FC<RuleFormProps> = ({
           type="submit"
           className="w-full sm:w-auto bg-primary hover:bg-primary/90"
         >
-          {initialData && 'id' in initialData && initialData.id ? "Update Rule" : "Save Rule"}
+          {initialData ? "Update Rule" : "Save Rule"}
         </Button>
       </div>
-      */}
     </form>
   );
-};
+}
