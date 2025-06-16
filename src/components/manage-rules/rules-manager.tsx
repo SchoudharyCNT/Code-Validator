@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 
-const BASE_URL = process.env.BASEURL || "http://localhost:8080/v1";
+const BASE_URL = process.env.NEXT_PUBLIC_BASEURL || "http://localhost:8080/v1";
 
 export function RulesManager() {
   const [rules, setRules] = useState<Rule[]>([]);

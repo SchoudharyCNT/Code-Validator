@@ -21,7 +21,9 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import type { Language, Category, Subcategory } from "@/lib/types";
 import { PlusCircle, Trash2, LanguagesIcon, FolderPlus } from "lucide-react";
-const BASE_URL = process.env.BASEURL || "http://localhost:8080/v1";
+
+const BASE_URL = process.env.NEXT_PUBLIC_BASEURL || "http://localhost:8080/v1";
+
 // --- API actions --- //
 const createLanguageAction = async (name: string): Promise<Language> => {
   const res = await fetch(`${BASE_URL}/language`, {

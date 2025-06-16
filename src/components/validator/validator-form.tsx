@@ -44,7 +44,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useToast } from "@/hooks/use-toast";
 
-const BASE_URL = process.env.BASEURL || "http://localhost:8080/v1";
+const BASE_URL = process.env.NEXT_PUBLIC_BASEURL || "http://localhost:8080/v1";
 
 export function ValidatorForm() {
   const [languagesData, setLanguagesData] =
@@ -298,7 +298,7 @@ export function ValidatorForm() {
               <CheckCircle className="h-7 w-7" />
               Validation Results
             </CardTitle>
-            {validationResult.summary && (
+            {validationResult.summary && validationResult.summary.trim() !== "" && (
               <CardDescription>{validationResult.summary}</CardDescription>
             )}
           </CardHeader>
@@ -330,7 +330,7 @@ export function ValidatorForm() {
                       </div>
                     </AccordionTrigger>
                     <AccordionContent className="space-y-2 pl-8 text-sm">
-                      {violation.description && (
+                      {violation.description && violation.description.trim() !== "" && (
                         <p>
                           <strong className="text-foreground">
                             Description:
@@ -338,7 +338,7 @@ export function ValidatorForm() {
                           {violation.description}
                         </p>
                       )}
-                      {violation.suggestion && (
+                      {violation.suggestion && violation.suggestion.trim() !== "" && (
                         <p>
                           <strong className="text-foreground">
                             Suggestion:
