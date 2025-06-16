@@ -30,7 +30,7 @@ interface RuleFormProps {
   categories: Category[];
 }
 
-const defaultRule: Omit<Rule, "id"> = {
+const defaultRuleBase: Omit<Rule, "id"> = {
   languageId: "",
   categoryId: "",
   title: "",
@@ -41,20 +41,23 @@ const defaultRule: Omit<Rule, "id"> = {
   validationValue: "",
 };
 
-export const RuleForm = ({
+export const RuleForm: React.FC<RuleFormProps> = ({
   onSubmit,
   onCancel,
   initialData,
   languages,
   categories: allCategories,
-}: RuleFormProps) => {
+}) => {
   const [rule, setRule] = useState<Omit<Rule, "id"> | Rule>(() => {
-    const base = initialData ? { ...defaultRule, ...initialData } : { ...defaultRule };
-    return {
-      ...base,
-      validationType: initialData?.validationType || "",
-      validationValue: initialData?.validationValue || "",
-    };
+    if (initialData) {
+      return {
+        ...defaultRuleBase,
+        ...initialData,
+        validationType: initialData.validationType || "",
+        validationValue: initialData.validationValue || "",
+      };
+    }
+    return { ...defaultRuleBase };
   });
   const [availableCategories, setAvailableCategories] = useState<Category[]>(
     []
@@ -63,12 +66,16 @@ export const RuleForm = ({
   const { toast } = useToast();
 
   useEffect(() => {
-    const base = initialData ? { ...defaultRule, ...initialData } : { ...defaultRule };
-    setRule({
-        ...base,
-        validationType: initialData?.validationType || "",
-        validationValue: initialData?.validationValue || ""
-    });
+    if (initialData) {
+      setRule({
+        ...defaultRuleBase,
+        ...initialData,
+        validationType: initialData.validationType || "",
+        validationValue: initialData.validationValue || "",
+      });
+    } else {
+      setRule({ ...defaultRuleBase });
+    }
   }, [initialData]);
 
   useEffect(() => {
@@ -88,7 +95,7 @@ export const RuleForm = ({
 
 
   const handleChange = (
-    field: keyof Rule, 
+    field: keyof Omit<Rule, "id">,
     value: string | RuleSeverity
   ) => {
     setRule((prev) => ({ ...prev, [field]: value }));
@@ -100,7 +107,7 @@ export const RuleForm = ({
     if (!languageId || !categoryId || !title || !description || !severity) {
       toast({
         title: "Error",
-        description: "Please fill in all required fields.",
+        description: "Please fill in all required fields (Language, Category, Title, Description, Severity).",
         variant: "destructive",
       });
       return;
@@ -116,9 +123,9 @@ export const RuleForm = ({
       !rule.description
     ) {
       toast({
-        title: "Missing Information",
+        title: "Missing Information for AI Suggestion",
         description:
-          "Please provide Language, Category, Code Example, and Description for AI suggestions.",
+          "Please provide Language, Category, Code Example, and a base Description for AI suggestions.",
         variant: "destructive",
       });
       return;
@@ -134,7 +141,7 @@ export const RuleForm = ({
       if (!selectedLanguage || !selectedCategory) {
         toast({
           title: "Error",
-          description: "Selected language or category not found.",
+          description: "Selected language or category not found for AI suggestion.",
           variant: "destructive",
         });
         setIsSuggesting(false);
@@ -179,6 +186,8 @@ export const RuleForm = ({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 py-4">
+      <div>Diagnostic Test: Minimal Form Content</div>
+      {/*
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <Label htmlFor="rule-language">Language *</Label>
@@ -241,7 +250,7 @@ export const RuleForm = ({
       </div>
 
       <div>
-        <Label htmlFor="rule-code-example">Code Example (optional)</Label>
+        <Label htmlFor="rule-code-example">Code Example (optional, but recommended for AI Suggest)</Label>
         <Textarea
           id="rule-code-example"
           className="font-code"
@@ -297,7 +306,7 @@ export const RuleForm = ({
           type="button"
           variant="outline"
           onClick={handleAISuggest}
-          disabled={isSuggesting}
+          disabled={isSuggesting || !rule.codeExample || !rule.description || !rule.languageId || !rule.categoryId}
           className="w-full sm:w-auto"
         >
           {isSuggesting ? (
@@ -319,9 +328,10 @@ export const RuleForm = ({
           type="submit"
           className="w-full sm:w-auto bg-primary hover:bg-primary/90"
         >
-          {initialData ? "Update Rule" : "Save Rule"}
+          {initialData && 'id' in initialData && initialData.id ? "Update Rule" : "Save Rule"}
         </Button>
       </div>
+      */}
     </form>
   );
 };
