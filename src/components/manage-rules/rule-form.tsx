@@ -35,6 +35,8 @@ const defaultRule: Omit<Rule, "id"> = {
   description: "",
   codeExample: "",
   severity: "MEDIUM",
+  validationType: "",
+  validationValue: "",
 };
 
 export function RuleForm({
@@ -45,7 +47,9 @@ export function RuleForm({
   categories: allCategories,
 }: RuleFormProps) {
   const [rule, setRule] = useState<Omit<Rule, "id">>(
-    initialData || defaultRule
+    initialData
+      ? { ...defaultRule, ...initialData }
+      : { ...defaultRule }
   );
   const [availableCategories, setAvailableCategories] = useState<Category[]>(
     []
@@ -54,7 +58,7 @@ export function RuleForm({
   const { toast } = useToast();
 
   useEffect(() => {
-    setRule(initialData || defaultRule);
+    setRule(initialData ? { ...defaultRule, ...initialData } : { ...defaultRule });
   }, [initialData]);
 
   useEffect(() => {
@@ -232,6 +236,27 @@ export function RuleForm({
           placeholder="const password = 'secret';"
           rows={4}
         />
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <Label htmlFor="rule-validation-type">Validation Type (optional)</Label>
+          <Input
+            id="rule-validation-type"
+            value={rule.validationType || ""}
+            onChange={(e) => handleChange("validationType", e.target.value)}
+            placeholder="e.g., Regex, AST_Selector"
+          />
+        </div>
+        <div>
+          <Label htmlFor="rule-validation-value">Validation Value (optional)</Label>
+          <Input
+            id="rule-validation-value"
+            value={rule.validationValue || ""}
+            onChange={(e) => handleChange("validationValue", e.target.value)}
+            placeholder="e.g., /password\s*=\s*['\"].*['\"]/"
+          />
+        </div>
       </div>
 
       <div>

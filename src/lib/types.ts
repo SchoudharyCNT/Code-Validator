@@ -26,6 +26,8 @@ export interface Rule {
   description: string;
   codeExample?: string;
   severity: RuleSeverity;
+  validationType?: string;
+  validationValue?: string;
 }
 
 // For the validator form dropdowns

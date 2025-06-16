@@ -67,7 +67,9 @@ export function RulesTable({
         : true;
       const termMatch = searchTerm
         ? rule.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          rule.description.toLowerCase().includes(searchTerm.toLowerCase())
+          rule.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          (rule.validationType || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+          (rule.validationValue || "").toLowerCase().includes(searchTerm.toLowerCase())
         : true;
       return langMatch && catMatch && termMatch;
     });
@@ -108,7 +110,8 @@ export function RulesTable({
     const newLangFilter =
       selectedValue === ALL_LANGUAGES_VALUE ? "" : selectedValue;
     setFilterLanguage(newLangFilter);
-    if (newLangFilter === "") {
+    // Reset category filter if "All Languages" is chosen or if the selected language changes
+    if (newLangFilter === "" || (newLangFilter && newLangFilter !== filterLanguage)) {
       setFilterCategory("");
     }
   };
@@ -120,8 +123,11 @@ export function RulesTable({
   };
 
   const availableCategoriesForFilter = useMemo(() => {
+    if (!filterLanguage) {
+      return categories; // Show all categories if no language is selected
+    }
     return categories.filter(
-      (c) => !filterLanguage || c.languageId === filterLanguage
+      (c) => c.languageId === filterLanguage
     );
   }, [categories, filterLanguage]);
 
@@ -135,7 +141,7 @@ export function RulesTable({
         </CardHeader>
         <CardContent className="p-2 grid grid-cols-1 md:grid-cols-3 gap-4">
           <Select
-            value={filterLanguage}
+            value={filterLanguage || ALL_LANGUAGES_VALUE}
             onValueChange={handleLanguageFilterChange}
           >
             <SelectTrigger>
@@ -152,7 +158,7 @@ export function RulesTable({
           </Select>
 
           <Select
-            value={filterCategory}
+            value={filterCategory || ALL_CATEGORIES_VALUE}
             onValueChange={handleCategoryFilterChange}
           >
             <SelectTrigger>
@@ -171,7 +177,7 @@ export function RulesTable({
           </Select>
 
           <Input
-            placeholder="Search by title or description..."
+            placeholder="Search rules..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -187,6 +193,8 @@ export function RulesTable({
               <TableHead className="font-headline">Language</TableHead>
               <TableHead className="font-headline">Category</TableHead>
               <TableHead className="font-headline">Severity</TableHead>
+              <TableHead className="font-headline">Validation Type</TableHead>
+              <TableHead className="font-headline">Validation Value</TableHead>
               <TableHead className="font-headline text-right">
                 Actions
               </TableHead>
@@ -204,6 +212,8 @@ export function RulesTable({
                       {rule.severity}
                     </Badge>
                   </TableCell>
+                  <TableCell>{rule.validationType || "-"}</TableCell>
+                  <TableCell>{rule.validationValue || "-"}</TableCell>
                   <TableCell className="text-right space-x-2">
                     <Button
                       variant="outline"
@@ -225,7 +235,7 @@ export function RulesTable({
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={5}
+                  colSpan={7}
                   className="text-center text-muted-foreground py-8"
                 >
                   No rules found matching your criteria.

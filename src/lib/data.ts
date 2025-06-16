@@ -29,7 +29,9 @@ export const mockRules: Rule[] = [
     title: 'Avoid hardcoded credentials',
     description: 'Hardcoding credentials in code can lead to serious security breaches. Use environment variables instead.',
     codeExample: "const password = '123456';",
-    severity: 'Error' as RuleSeverity,
+    severity: 'HIGH' as RuleSeverity,
+    validationType: 'Regex',
+    validationValue: "password\\s*=\\s*['\\\"](?!{{|process.env|config.)",
   },
   {
     id: 'rule_002',
@@ -38,7 +40,9 @@ export const mockRules: Rule[] = [
     title: 'Minimize DOM manipulations',
     description: 'Frequent DOM manipulations can slow down web page performance. Batch updates or use virtual DOM libraries.',
     codeExample: "for (let i = 0; i < 1000; i++) { document.getElementById('el').innerHTML += i; }",
-    severity: 'Warning' as RuleSeverity,
+    severity: 'MEDIUM' as RuleSeverity,
+    validationType: 'Manual',
+    validationValue: '',
   },
   {
     id: 'rule_003',
@@ -47,7 +51,9 @@ export const mockRules: Rule[] = [
     title: 'Use list comprehensions for clarity',
     description: 'List comprehensions are often more readable and efficient than explicit for loops for creating lists.',
     codeExample: "squares = []\nfor x in range(10):\n  squares.append(x**2)",
-    severity: 'Info' as RuleSeverity,
+    severity: 'LOW' as RuleSeverity,
+    validationType: '',
+    validationValue: '',
   },
 ];
 
