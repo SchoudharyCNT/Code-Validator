@@ -14,13 +14,13 @@
     --primary-foreground: 0 0% 100%; /* White */
     --secondary: 174 40% 75%; /* Lighter Teal */
     --secondary-foreground: 174 60% 30%; /* Darker Teal for text on secondary */
-    --muted: 165 22% 90%; 
+    --muted: 165 22% 90%;
     --muted-foreground: 174 15% 45%;
     --accent: 16 100% 63%; /* #FF7043 Muted Orange */
     --accent-foreground: 0 0% 100%; /* White */
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 174 20% 80%; 
+    --border: 174 20% 80%;
     --input: 174 20% 88%;
     --ring: 174 60% 44%; /* Primary color for ring */
     --chart-1: 12 76% 61%;
@@ -33,7 +33,7 @@
     /* Sidebar specific colors - adjust if sidebar is used, for now keep them distinct */
     --sidebar-background: 240 5.9% 10%; /* Default dark sidebar */
     --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 174 60% 44%; 
+    --sidebar-primary: 174 60% 44%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 16 100% 63%;
     --sidebar-accent-foreground: 0 0% 100%;

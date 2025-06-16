@@ -41,7 +41,7 @@ const SuggestRuleOutputSchema = z.object({
 export type SuggestRuleOutput = z.infer<typeof SuggestRuleOutputSchema>;
 
 export async function suggestRule(
-  input: SuggestRuleInput
+  input: SuggestRuleInput,
 ): Promise<SuggestRuleOutput> {
   return suggestRuleFlow(input);
 }
@@ -72,5 +72,5 @@ const suggestRuleFlow = ai.defineFlow(
   async (input) => {
     const { output } = await prompt(input);
     return output!;
-  }
+  },
 );

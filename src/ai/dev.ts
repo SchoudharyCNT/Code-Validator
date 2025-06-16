@@ -1,5 +1,5 @@
-import { config } from 'dotenv';
+import { config } from "dotenv";
 config();
 // Test comment
-import '@/ai/flows/code-validation.ts';
-import '@/ai/flows/rule-suggestion.ts';
+import "@/ai/flows/code-validation.ts";
+import "@/ai/flows/rule-suggestion.ts";

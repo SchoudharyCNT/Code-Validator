@@ -22,7 +22,7 @@ import { useToast } from "@/hooks/use-toast";
 import type { Language, Category, Subcategory } from "@/lib/types";
 import { PlusCircle, Trash2, LanguagesIcon, FolderPlus } from "lucide-react";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASEURL || "http://localhost:8080/v1";
+const BASE_URL = process.env.NEXT_PUBLIC_BASEURL ?? "";
 
 // --- API actions --- //
 const createLanguageAction = async (name: string): Promise<Language> => {
@@ -55,7 +55,7 @@ const fetchLanguages = async (): Promise<Language[]> => {
 
 const createCategoryAction = async (
   languageId: string,
-  name: string
+  name: string,
 ): Promise<Category> => {
   const res = await fetch(`${BASE_URL}/categories`, {
     method: "POST",
@@ -142,7 +142,7 @@ export function LanguageCategoryForms() {
 
       setCategories((prev) => prev.filter((c) => c.languageId !== id));
       setSubcategories((prev) =>
-        prev.filter((s) => !relatedCatIds.includes(s.categoryId))
+        prev.filter((s) => !relatedCatIds.includes(s.categoryId)),
       );
 
       toast({
@@ -170,7 +170,7 @@ export function LanguageCategoryForms() {
     try {
       const newCat = await createCategoryAction(
         selectedLangForCat,
-        newCategoryName.trim()
+        newCategoryName.trim(),
       );
       setCategories((prev) => [...prev, newCat]);
       setNewCategoryName("");
@@ -207,7 +207,7 @@ export function LanguageCategoryForms() {
   };
 
   return (
-    <div className="grid md:grid-cols-3 gap-6">
+    <div className="grid md:grid-cols-2 gap-12">
       {/* Languages */}
       <Card className="shadow-lg">
         <CardHeader>

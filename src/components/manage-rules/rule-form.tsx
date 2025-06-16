@@ -35,6 +35,8 @@ const defaultRule: Omit<Rule, "id"> = {
   description: "",
   codeExample: "",
   severity: "MEDIUM",
+  validationType: "",
+  validationValue: "",
 };
 
 export function RuleForm({
@@ -45,10 +47,10 @@ export function RuleForm({
   categories: allCategories,
 }: RuleFormProps) {
   const [rule, setRule] = useState<Omit<Rule, "id">>(
-    initialData || defaultRule
+    initialData || defaultRule,
   );
   const [availableCategories, setAvailableCategories] = useState<Category[]>(
-    []
+    [],
   );
   const [isSuggesting, setIsSuggesting] = useState(false);
   const { toast } = useToast();
@@ -60,7 +62,7 @@ export function RuleForm({
   useEffect(() => {
     if (rule.languageId) {
       const filtered = allCategories.filter(
-        (c) => c.languageId === rule.languageId
+        (c) => c.languageId === rule.languageId,
       );
       setAvailableCategories(filtered);
       if (!filtered.some((c) => c.id === rule.categoryId)) {
@@ -110,7 +112,7 @@ export function RuleForm({
     try {
       const selectedLanguage = languages.find((l) => l.id === rule.languageId);
       const selectedCategory = allCategories.find(
-        (c) => c.id === rule.categoryId
+        (c) => c.id === rule.categoryId,
       );
 
       if (!selectedLanguage || !selectedCategory) {
@@ -251,6 +253,26 @@ export function RuleForm({
             <SelectItem value="LOW">LOW</SelectItem>
           </SelectContent>
         </Select>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <Label htmlFor="rule-validation-type">Validation Type</Label>
+          <Input
+            id="rule-validation-type"
+            value={rule.validationType || ""}
+            onChange={(e) => handleChange("validationType", e.target.value)}
+            placeholder="e.g., regex, string, number..."
+          />
+        </div>
+        <div>
+          <Label htmlFor="rule-validation-value">Validation Value</Label>
+          <Input
+            id="rule-validation-value"
+            value={rule.validationValue || ""}
+            onChange={(e) => handleChange("validationValue", e.target.value)}
+            placeholder="e.g., ^[a-z]+$, 10, etc."
+          />
+        </div>
       </div>
 
       <div className="flex flex-col sm:flex-row justify-end gap-2 pt-4">

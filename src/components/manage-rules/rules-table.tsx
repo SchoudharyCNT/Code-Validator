@@ -68,8 +68,12 @@ export function RulesTable({
       const termMatch = searchTerm
         ? rule.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
           rule.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          (rule.validationType || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
-          (rule.validationValue || "").toLowerCase().includes(searchTerm.toLowerCase())
+          (rule.validationType || "")
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
+          (rule.validationValue || "")
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase())
         : true;
       return langMatch && catMatch && termMatch;
     });
@@ -81,7 +85,7 @@ export function RulesTable({
     categories.find((c) => c.id === id)?.name || "N/A";
 
   const severityVariant = (
-    severity: Rule["severity"]
+    severity: Rule["severity"],
   ): "default" | "secondary" | "destructive" | "outline" => {
     switch (severity) {
       case "HIGH":
@@ -111,14 +115,17 @@ export function RulesTable({
       selectedValue === ALL_LANGUAGES_VALUE ? "" : selectedValue;
     setFilterLanguage(newLangFilter);
     // Reset category filter if "All Languages" is chosen or if the selected language changes
-    if (newLangFilter === "" || (newLangFilter && newLangFilter !== filterLanguage)) {
+    if (
+      newLangFilter === "" ||
+      (newLangFilter && newLangFilter !== filterLanguage)
+    ) {
       setFilterCategory("");
     }
   };
 
   const handleCategoryFilterChange = (selectedValue: string) => {
     setFilterCategory(
-      selectedValue === ALL_CATEGORIES_VALUE ? "" : selectedValue
+      selectedValue === ALL_CATEGORIES_VALUE ? "" : selectedValue,
     );
   };
 
@@ -126,9 +133,7 @@ export function RulesTable({
     if (!filterLanguage) {
       return categories; // Show all categories if no language is selected
     }
-    return categories.filter(
-      (c) => c.languageId === filterLanguage
-    );
+    return categories.filter((c) => c.languageId === filterLanguage);
   }, [categories, filterLanguage]);
 
   return (

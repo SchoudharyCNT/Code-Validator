@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASEURL || "http://localhost:8080/v1";
+const BASE_URL = process.env.NEXT_PUBLIC_BASEURL ?? "";
 
 export function RulesManager() {
   const [rules, setRules] = useState<Rule[]>([]);
@@ -110,7 +110,7 @@ export function RulesManager() {
     try {
       const savedRule = await updateRule(updatedRule);
       setRules((prev) =>
-        prev.map((r) => (r.id === savedRule.id ? savedRule : r))
+        prev.map((r) => (r.id === savedRule.id ? savedRule : r)),
       );
       toast({ title: "Success", description: "Rule updated successfully." });
       setIsRuleFormOpen(false);

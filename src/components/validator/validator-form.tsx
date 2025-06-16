@@ -44,7 +44,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useToast } from "@/hooks/use-toast";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASEURL || "http://localhost:8080/v1";
+const BASE_URL = process.env.NEXT_PUBLIC_BASEURL ?? "";
 
 export function ValidatorForm() {
   const [languagesData, setLanguagesData] =
@@ -103,7 +103,7 @@ export function ValidatorForm() {
   useEffect(() => {
     if (selectedLanguage) {
       const langObj = languagesData.languages.find(
-        (l) => l.name === selectedLanguage
+        (l) => l.name === selectedLanguage,
       );
       setCategories(langObj ? langObj.categories : []);
       setSelectedCategory("");
@@ -159,7 +159,6 @@ export function ValidatorForm() {
 
       // ✅ Step 3: Parse it into real JSON
       const parsed = JSON.parse(unescapedJson);
-
       setValidationResult(parsed);
 
       toast({
@@ -294,13 +293,27 @@ export function ValidatorForm() {
       {validationResult && (
         <Card className="mt-6 shadow-lg">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 font-headline text-2xl text-primary">
-              <CheckCircle className="h-7 w-7" />
-              Validation Results
+            <CardTitle className="flex items-center gap-2 font-headline text-2xl">
+              Validation Results:{" "}
+              <span
+                className={
+                  validationResult.passed
+                    ? "text-green-600"
+                    : "text-destructive"
+                }
+              >
+                {validationResult.passed ? "Success" : "Failed"}
+              </span>
+              {validationResult.passed ? (
+                <CheckCircle className="h-7 w-7 text-green-600" />
+              ) : (
+                <XCircle className="h-7 w-7 text-destructive" />
+              )}
             </CardTitle>
-            {validationResult.summary && validationResult.summary.trim() !== "" && (
-              <CardDescription>{validationResult.summary}</CardDescription>
-            )}
+            {validationResult.summary &&
+              validationResult.summary.trim() !== "" && (
+                <CardDescription>{validationResult.summary}</CardDescription>
+              )}
           </CardHeader>
           <CardContent className="space-y-4">
             {validationResult.violations.length > 0 ? (
@@ -330,22 +343,24 @@ export function ValidatorForm() {
                       </div>
                     </AccordionTrigger>
                     <AccordionContent className="space-y-2 pl-8 text-sm">
-                      {violation.description && violation.description.trim() !== "" && (
-                        <p>
-                          <strong className="text-foreground">
-                            Description:
-                          </strong>{" "}
-                          {violation.description}
-                        </p>
-                      )}
-                      {violation.suggestion && violation.suggestion.trim() !== "" && (
-                        <p>
-                          <strong className="text-foreground">
-                            Suggestion:
-                          </strong>{" "}
-                          {violation.suggestion}
-                        </p>
-                      )}
+                      {violation.description &&
+                        violation.description.trim() !== "" && (
+                          <p>
+                            <strong className="text-foreground">
+                              Description:
+                            </strong>{" "}
+                            {violation.description}
+                          </p>
+                        )}
+                      {violation.suggestion &&
+                        violation.suggestion.trim() !== "" && (
+                          <p>
+                            <strong className="text-foreground">
+                              Suggestion:
+                            </strong>{" "}
+                            {violation.suggestion}
+                          </p>
+                        )}
                     </AccordionContent>
                   </AccordionItem>
                 ))}

@@ -1,11 +1,11 @@
-import type { Metadata } from 'next';
-import './globals.css';
-import { Navbar } from '@/components/layout/navbar';
+import type { Metadata } from "next";
+import "./globals.css";
+import { Navbar } from "@/components/layout/navbar";
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
-  title: 'CodeCheck AI',
-  description: 'AI-Powered Code Validation and Rule Management',
+  title: "CodeCheck AI",
+  description: "AI-Powered Code Validation and Rule Management",
 };
 
 export default function RootLayout({
@@ -15,8 +15,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-      </head>
+      <head></head>
       <body className="font-body antialiased" suppressHydrationWarning>
         <div className="flex flex-col min-h-screen">
           <Navbar />
